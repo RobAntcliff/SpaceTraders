@@ -27,6 +27,12 @@ try
     var yokes = await client.My.Agent.GetAsAgentGetResponseAsync();
     Console.WriteLine(yokes);
 
+    var location = await client.Systems["X1-ZB92"].Waypoints["X1-ZB92-A1"].GetAsWithWaypointSymbolGetResponseAsync();
+    Console.WriteLine(location);
+
+    var mission = await client.My.Contracts.GetAsContractsGetResponseAsync();
+    Console.WriteLine(mission);
+
     // var registerJson = new RegisterPostRequestBody
     // {
     //     Symbol = "Mulciber",
