@@ -4,34 +4,63 @@ using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using System.Runtime.InteropServices;
 using SpaceTraders.Client.Register;
+using System;
+using System.Linq;
 
-string tempKey = File.ReadAllText(@"supersecretkey.txt");
+using var db = new AgentContext();
 
 // Create auth provider
 //var authProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
-var authProvider = new AnonymousAuthenticationProvider();
+var anonymousAuthProvider = new AnonymousAuthenticationProvider();
 // Create request adapter using the HttpClient-based implementation
-var adapter = new HttpClientRequestAdapter(authProvider);
+var adapter = new HttpClientRequestAdapter(anonymousAuthProvider);
 // Create the API client
 var client = new SpaceTradersClient(adapter);
 
 try
 {
-    // Register new agent
-    var registerJson = new RegisterPostRequestBody
-    {
-        Symbol = "Bobe",
-        Faction = FactionSymbol.DOMINION
-    };
+    // //Register new agent
+    // var registerJson = new RegisterPostRequestBody
+    // {
+    //     Symbol = "Bobe2",
+    //     Faction = FactionSymbol.DOMINION
+    // };
 
-    var register = await client.Register.PostAsRegisterPostResponseAsync(registerJson);
+    // var register = await client.Register.PostAsRegisterPostResponseAsync(registerJson);
 
-    // Write token into supersecrettoken.txt
-    File.WriteAllText(@"supersecretkey.txt", $"Bearer: {register?.Data?.Token}");
+    // // Write token into supersecretkey.txt
+    // File.WriteAllText(@"supersecretkey.txt", $"Bearer {register?.Data?.Token}");
 
     // Write agent info to a DB
+    // string tempKey = File.ReadAllText(@"supersecretkey.txt");
+    // var apiKeyAuthProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
+    // adapter = new HttpClientRequestAdapter(apiKeyAuthProvider);
+    // client = new SpaceTradersClient(adapter);
+
+    // var agent = await client.My.Agent.GetAsAgentGetResponseAsync();
+
+    // Console.WriteLine("Inserting a new Agent");
+    // if(agent != null){
+    //     db.Add(new Agent { 
+    //     AccountId = agent.Data.AccountId,
+    //     Symbol = agent.Data.Symbol,
+    //     Headquarters = agent.Data.Headquarters,
+    //     Credits = (long) agent.Data.Credits,
+    //     StartingFaction = agent.Data.StartingFaction,
+    //     ShipCount = (int) agent.Data.ShipCount,
+    //      });
+    //     db.SaveChanges();
+    // }
+    
+    Console.WriteLine("Querying for a Agent");
+    var dbAgent = db.Agents
+    .OrderBy(b => b.AgentId)
+    .First();
+
+    Console.WriteLine(dbAgent.StartingFaction);
 
     // Write Starting Ship Info to DB
+    
 
     // Get all waypoints in start system & write to DB
 
