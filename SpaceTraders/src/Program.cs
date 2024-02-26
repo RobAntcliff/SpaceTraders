@@ -7,9 +7,9 @@ using SpaceTraders.Client.Register;
 
 string tempKey = File.ReadAllText(@"supersecretkey.txt");
 
-// API requires no authentication, so use the anonymous
-// authentication provider
-var authProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
+// Create auth provider
+//var authProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
+var authProvider = new AnonymousAuthenticationProvider();
 // Create request adapter using the HttpClient-based implementation
 var adapter = new HttpClientRequestAdapter(authProvider);
 // Create the API client
@@ -17,6 +17,30 @@ var client = new SpaceTradersClient(adapter);
 
 try
 {
+    // Register new agent
+    var registerJson = new RegisterPostRequestBody
+    {
+        Symbol = "Bobe",
+        Faction = FactionSymbol.DOMINION
+    };
+
+    var register = await client.Register.PostAsRegisterPostResponseAsync(registerJson);
+
+    // Write token into supersecrettoken.txt
+    File.WriteAllText(@"supersecretkey.txt", $"Bearer: {register?.Data?.Token}");
+
+    // Write agent info to a DB
+
+    // Write Starting Ship Info to DB
+
+    // Get all waypoints in start system & write to DB
+
+    // Get all markets in start system and write to DB
+
+    // Get all shipyards and write to DB
+
+
+
     // var status = await client.GetAsGetResponseAsync();
     // Console.WriteLine(status);
 
@@ -24,22 +48,15 @@ try
     // var factionsString = factions.ToString();
     // Console.WriteLine(factionsString);
 
-    var yokes = await client.My.Agent.GetAsAgentGetResponseAsync();
-    Console.WriteLine(yokes);
+    // var yokes = await client.My.Agent.GetAsAgentGetResponseAsync();
+    // Console.WriteLine(yokes);
 
-    var location = await client.Systems["X1-ZB92"].Waypoints["X1-ZB92-A1"].GetAsWithWaypointSymbolGetResponseAsync();
-    Console.WriteLine(location);
+    // var location = await client.Systems["X1-ZB92"].Waypoints["X1-ZB92-A1"].GetAsWithWaypointSymbolGetResponseAsync();
+    // Console.WriteLine(location);
 
-    var mission = await client.My.Contracts.GetAsContractsGetResponseAsync();
-    Console.WriteLine(mission);
+    // var mission = await client.My.Contracts.GetAsContractsGetResponseAsync();
+    // Console.WriteLine(mission);
 
-    // var registerJson = new RegisterPostRequestBody
-    // {
-    //     Symbol = "Mulciber",
-    //     Faction = FactionSymbol.DOMINION
-    // };
-
-    // var register = await client.Register.PostAsRegisterPostResponseAsync(registerJson);
     // Console.WriteLine(register?.Data?.Token);
     //Console.WriteLine($"Retrieved {allPosts?.Count} posts.");
 
