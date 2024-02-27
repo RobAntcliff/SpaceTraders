@@ -27,17 +27,17 @@ try
         Init init = new Init();
         init.CreateNewAgent("Bobe", FactionSymbol.DOMINION);
         
-        client = Client.AuthenticatedClient();
+        client = await AuthenticationClient.Client;
 
         init = new Init(client);
 
         init.StoreAgentDetails();
 
     } else {
-        client = Client.AuthenticatedClient();
+        client = await AuthenticationClient.Client;
     }
 
-    //Let's get some ships mining
+    var status = await client.GetAsGetResponseAsync();
 
     var agent = await client.My.Agent.GetAsAgentGetResponseAsync();
 
@@ -48,15 +48,15 @@ try
 
     Console.WriteLine(dbAgent.StartingFaction);
 
-    // Write Starting Ship Info to DB
+    //Let's get some ships mining
     var ships = await client.My.Ships.GetAsShipsGetResponseAsync();
     Console.WriteLine(ships.ToString());
 
-    // Get all waypoints in start system & write to DB
-
-    // Get all markets in start system and write to DB
-
-    // Get all shipyards and write to DB
+    // foreach(Ship ship in ships.Data){
+    //     if(ship.Registration.Role == ShipRole.EXCAVATOR){
+    //         //get mining
+    //     }
+    // }
 
     // Get contract
     var contracts = await client.My.Contracts.GetAsContractsGetResponseAsync();
@@ -91,6 +91,8 @@ try
 
     ships = await client.My.Ships.GetAsShipsGetResponseAsync();
     Console.WriteLine(ships.Data.ToString());
+
+    
 
     // Mine asteroids
     // var asteroids = await client.Systems["X1-FM95"].Waypoints.GetAsWaypointsGetResponseAsync(x => x.QueryParameters.TypeAsWaypointType = WaypointType.ENGINEERED_ASTEROID);
