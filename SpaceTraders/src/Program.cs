@@ -13,44 +13,33 @@ using SpaceTraders.Client.My.Ships.Item.Refuel;
 using SpaceTraders.Client.My.Ships.Item.Extract;
 using SpaceTraders.Client.My.Ships.Item.Sell;
 using System.Linq.Expressions;
+using SpaceTraders.src;
+using Microsoft.EntityFrameworkCore.Update;
 
 using var db = new AgentContext();
 
-// Create auth provider
-//var authProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
-var anonymousAuthProvider = new AnonymousAuthenticationProvider();
-// Create request adapter using the HttpClient-based implementation
-var adapter = new HttpClientRequestAdapter(anonymousAuthProvider);
-// Create the API client
-var client = new SpaceTradersClient(adapter);
-
 try
 {
-    // //Register new agent
-    // var registerJson = new RegisterPostRequestBody
-    // {
-    //     Symbol = "Bobe2",
-    //     Faction = FactionSymbol.DOMINION
-    // };
+    SpaceTradersClient client;
 
-    // var register = await client.Register.PostAsRegisterPostResponseAsync(registerJson);
+    //TODO: Check the reset time and run the init again if we're past the reset
+    if(false){
+        Init init = new Init();
+        init.CreateNewAgent("Bobe", FactionSymbol.DOMINION);
+        
+        client = Client.AuthenticatedClient();
 
-    // // Write token into supersecretkey.txt
-    // File.WriteAllText(@"supersecretkey.txt", $"Bearer {register?.Data?.Token}");
+        init = new Init(client);
 
-    // Write agent info to a DB
-    string tempKey = File.ReadAllText(@"supersecretkey.txt");
-    var apiKeyAuthProvider = new ApiKeyAuthenticationProvider(tempKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
-    adapter = new HttpClientRequestAdapter(apiKeyAuthProvider);
-    client = new SpaceTradersClient(adapter);
+        init.StoreAgentDetails();
+
+    } else {
+        client = Client.AuthenticatedClient();
+    }
+
+    //Let's get some ships mining
 
     var agent = await client.My.Agent.GetAsAgentGetResponseAsync();
-
-    // Console.WriteLine("Inserting a new Agent");
-    // if(agent != null){
-    //     db.Add(Agent.makeAgent(agent));
-    //     db.SaveChanges();
-    // }
 
     Console.WriteLine("Querying for a Agent");
     var dbAgent = db.Agents
@@ -127,14 +116,14 @@ try
 
     // var refuelShip = await client.My.Ships["BOBE-3"].Refuel.PostAsRefuelPostResponseAsync(refuelShipBody);
 
-    // var orbitAsteroidIThink = await client.My.Ships["BOBE-3"].Orbit.PostAsOrbitPostResponseAsync();
+    //var orbitAsteroidIThink = await client.My.Ships["BOBE-3"].Orbit.PostAsOrbitPostResponseAsync();
 
-    // var extractBody = new ExtractPostRequestBody
-    // {
+    var extractBody = new ExtractPostRequestBody
+    {
         
-    // };
+    };
 
-    // var mineAsteroid = await client.My.Ships["BOBE-3"].Extract.PostAsExtractPostResponseAsync(extractBody);
+    var mineAsteroid = await client.My.Ships["BOBE-3"].Extract.PostAsExtractPostResponseAsync(extractBody);
 
     var marketData = await client.Systems["X1-FM95"].Waypoints["X1-FM95-CD5Z"].Market.GetAsMarketGetResponseAsync();
 
