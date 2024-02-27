@@ -14,15 +14,18 @@ namespace SpaceTraders.src
     {
         SpaceTradersClient client;
 
-        public Init(){
+        public Init()
+        {
             this.client = Client.AnonymousClient();
         }
 
-        public Init(SpaceTradersClient client){
+        public Init(SpaceTradersClient client)
+        {
             this.client = client;
         }
 
-        public async void CreateNewAgent(string username, FactionSymbol faction){
+        public async void CreateNewAgent(string username, FactionSymbol faction)
+        {
             var registerJson = new RegisterPostRequestBody
             {
                 Symbol = username,
@@ -35,19 +38,22 @@ namespace SpaceTraders.src
             StoreAgentKey(register?.Data?.Token);
         }
 
-        public async void StoreAgentDetails(){
+        public async void StoreAgentDetails()
+        {
             using var db = new AgentContext();
 
             var agent = await client.My.Agent.GetAsAgentGetResponseAsync();
 
             Console.WriteLine("Inserting agent data to DB");
-            if(agent != null){
+            if (agent != null)
+            {
                 db.Add(Agent.makeAgent(agent));
                 db.SaveChanges();
             }
         }
 
-        private void StoreAgentKey(string key){
+        private void StoreAgentKey(string key)
+        {
             File.WriteAllText(@"supersecretkey.txt", $"Bearer {key}");
         }
     }

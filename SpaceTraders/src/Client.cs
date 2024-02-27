@@ -11,7 +11,8 @@ namespace SpaceTraders.src
 {
     public class Client
     {
-        public static SpaceTradersClient AnonymousClient(){
+        public static SpaceTradersClient AnonymousClient()
+        {
             var anonymousAuthProvider = new AnonymousAuthenticationProvider();
             // Create request adapter using the HttpClient-based implementation
             var adapter = new HttpClientRequestAdapter(anonymousAuthProvider);
@@ -19,7 +20,8 @@ namespace SpaceTraders.src
             return new SpaceTradersClient(adapter);
         }
 
-        public static SpaceTradersClient AuthenticatedClient(){
+        public static SpaceTradersClient AuthenticatedClient()
+        {
             string apiKey = File.ReadAllText(@"supersecretkey.txt");
             var apiKeyAuthProvider = new ApiKeyAuthenticationProvider(apiKey, "Authorization", ApiKeyAuthenticationProvider.KeyLocation.Header);
             var adapter = new HttpClientRequestAdapter(apiKeyAuthProvider);

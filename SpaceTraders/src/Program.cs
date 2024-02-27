@@ -22,18 +22,19 @@ try
 {
     SpaceTradersClient client;
 
-    //TODO: Check the reset time and run the init again if we're past the reset
-    if(false){
+    if (AuthenticationClient.HasExpired)
+    {
         Init init = new Init();
         init.CreateNewAgent("Bobe", FactionSymbol.DOMINION);
-        
+
         client = await AuthenticationClient.Client;
 
         init = new Init(client);
 
         init.StoreAgentDetails();
-
-    } else {
+    }
+    else
+    {
         client = await AuthenticationClient.Client;
     }
 
@@ -61,7 +62,8 @@ try
     // Get contract
     var contracts = await client.My.Contracts.GetAsContractsGetResponseAsync();
 
-    foreach(Contract contract in contracts.Data){
+    foreach (Contract contract in contracts.Data)
+    {
         Console.WriteLine(contract.Id);
     }
 
@@ -75,12 +77,13 @@ try
     var shipardWaypoints = await client.Systems["X1-FM95"].Waypoints.GetAsWaypointsGetResponseAsync(x => x.QueryParameters.Traits = "SHIPYARD");
 
 
-    foreach(Waypoint waypoint in shipardWaypoints.Data){
+    foreach (Waypoint waypoint in shipardWaypoints.Data)
+    {
         var shipsToPurchase = await client.Systems["X1-FM95"].Waypoints[waypoint.Symbol].Shipyard.GetAsShipyardGetResponseAsync();
     }
 
     //shipyward waypoint = "X1-FM95-H48"
-    
+
     var buyShipPostPost = new ShipsPostRequestBody
     {
         ShipType = ShipType.SHIP_MINING_DRONE,
@@ -92,7 +95,7 @@ try
     ships = await client.My.Ships.GetAsShipsGetResponseAsync();
     Console.WriteLine(ships.Data.ToString());
 
-    
+
 
     // Mine asteroids
     // var asteroids = await client.Systems["X1-FM95"].Waypoints.GetAsWaypointsGetResponseAsync(x => x.QueryParameters.TypeAsWaypointType = WaypointType.ENGINEERED_ASTEROID);
@@ -122,7 +125,7 @@ try
 
     var extractBody = new ExtractPostRequestBody
     {
-        
+
     };
 
     var mineAsteroid = await client.My.Ships["BOBE-3"].Extract.PostAsExtractPostResponseAsync(extractBody);
